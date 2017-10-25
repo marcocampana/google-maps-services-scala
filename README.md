@@ -1,6 +1,8 @@
 Scala Client for Google Maps Services
 ====================================
 
+[![Build Status](https://travis-ci.org/marcocampana/google-maps-services-scala.svg?branch=master)](https://travis-ci.org/marcocampana/google-maps-services-scala)
+
 ## Description
 
 A high performance Scala client library for Google Maps Services built with Akka-Http. It is heavily inspired
