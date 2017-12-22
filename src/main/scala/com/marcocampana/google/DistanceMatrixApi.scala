@@ -3,6 +3,7 @@
 
 package com.marcocampana.google
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.marcocampana.google.model.Avoid.Avoid
 import com.marcocampana.google.model.TravelMode.TravelMode
 import com.marcocampana.google.model.Units.Units
@@ -11,6 +12,15 @@ import com.marcocampana.google.model.TrafficModel.TrafficModel
 import com.marcocampana.google.model.TransitMode.TransitMode
 import com.marcocampana.google.model.TransitRoutingPreference.TransitRoutingPreference
 import com.marcocampana.google.model._
+import spray.json.DefaultJsonProtocol
+
+trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+  implicit val DistanceFormat = jsonFormat2(Distance)
+  implicit val DurationFormat = jsonFormat2(Duration)
+  implicit val ElementFormat = jsonFormat2(DistanceMatrixElement)
+  implicit val RowFormat = jsonFormat1(DistanceMatrixRow)
+  implicit val DistanceMatrixFormat = jsonFormat4(DistanceMatrix)
+}
 
 object DistanceMatrixApi extends JsonSupport {
 
@@ -25,9 +35,9 @@ object DistanceMatrixApi extends JsonSupport {
                         avoid: Option[Avoid] = None,
                         traffic_model: Option[TrafficModel] = None,
                         transit_mode: Option[List[TransitMode]] = None,
-                        transit_routing_preference: Option[TransitRoutingPreference] = None)(implicit apiKey: String) = {
+                        transit_routing_preference: Option[TransitRoutingPreference] = None)(implicit context: Context) = {
 
-    val request = new DistanceMatrixApiRequest(apiKey)
+    val request = new DistanceMatrixApiRequest(context)
 
     request.params("origins", origins.mkString("|"))
     request.params("destinations", destinations.mkString("|"))
@@ -90,14 +100,14 @@ object DistanceMatrixApi extends JsonSupport {
   }
 }
 
-case class DistanceMatrixApiRequest(apiKey: String) extends Request[DistanceMatrix] {
+case class DistanceMatrixApiRequest(context: Context) extends Request[DistanceMatrix] {
 
   override def uri(): String = {
     "/distancematrix/json"
   }
 
   override def key(): String = {
-    apiKey
+    context.apiKey
   }
 }
 

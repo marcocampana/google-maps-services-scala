@@ -1,8 +1,6 @@
 package com.marcocampana.google
 
 class GoogleMapsServicesClient() {
-  //  TODO create implicit context with api key
-
   lazy val distanceMatrix = DistanceMatrixApi
 }
 
